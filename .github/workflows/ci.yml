@@ -9,45 +9,42 @@ on:
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
 
-    - name: Install dependencies
-      run: |
-        cd backend
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
 
-    - name: Run Django checks
-      run: |
-        cd backend
-        python manage.py check
-        build-frontend:
-          runs-on: ubuntu-latest
-      
-          steps:
-          - name: Checkout code
-            uses: actions/checkout@v3
-      
-          - name: Set up Node.js
-            uses: actions/setup-node@v3
-            with:
-              node-version: '20'
-      
-          - name: Install dependencies
-            run: |
-              cd frontend
-              npm install
-      
-          - name: Run build
-            run: |
-              cd frontend
-              npm run build
-      
+      - name: Run Django checks
+        run: |
+          cd backend
+          python manage.py check
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run React build
+        run: |
+          cd frontend
+          npm run build
