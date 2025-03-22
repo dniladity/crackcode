@@ -1,13 +1,18 @@
 # frontend/Dockerfile
-FROM node:20
 
+# Build stage
+FROM node:20 AS build
 WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
 COPY . .
+RUN npm install
+RUN npm run build
 
-EXPOSE 5173
+# Production stage
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
 
-CMD ["npm", "run", "dev"]
+# Expose default Nginx port
+EXPOSE 80
+
+# Optional: Custom nginx config if needed
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
